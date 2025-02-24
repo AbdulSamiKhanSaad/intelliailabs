@@ -36,7 +36,7 @@ const Navigation = () => {
               <NavLink href="#services">Services</NavLink>
               <NavLink href="#about">About</NavLink>
               <NavLink href="#portfolio">Portfolio</NavLink>
-              <Button className="bg-blue-600 hover:bg-blue-700">Contact Us</Button>
+              <Button className="bg-blue-600 hover:bg-blue-700">Get Free Consultation</Button>
             </div>
           </div>
 
@@ -66,7 +66,7 @@ const Navigation = () => {
                 Portfolio
               </MobileNavLink>
               <Button className="w-full bg-blue-600 hover:bg-blue-700 mt-4">
-                Contact Us
+                Get Free Consultation
               </Button>
             </div>
           </div>

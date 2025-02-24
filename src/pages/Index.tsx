@@ -211,7 +211,7 @@ const Index = () => {
               Let's discuss how we can help bring your vision to life
             </p>
             <Button className="bg-blue-600 hover:bg-blue-700 animate-on-scroll opacity-0">
-              Get in Touch
+              Get Free Consultation
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
