@@ -87,6 +87,105 @@ const Index = () => {
         </div>
       </section>
 
+      {/* About Section */}
+      <section id="about" className="section-padding bg-gray-50">
+        <div className="container mx-auto">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 animate-on-scroll opacity-0">
+                About Us
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto mb-8 animate-on-scroll opacity-0">
+                We are a team of passionate developers, designers, and digital strategists dedicated to delivering exceptional solutions.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="space-y-6 animate-on-scroll opacity-0">
+                <h3 className="text-2xl font-display font-bold">Our Mission</h3>
+                <p className="text-gray-600">
+                  To empower businesses with cutting-edge technology solutions that drive growth and innovation in the digital age.
+                </p>
+                <ul className="space-y-3">
+                  <li className="flex items-center">
+                    <ArrowRight className="h-5 w-5 text-blue-600 mr-2" />
+                    <span>Industry-leading expertise</span>
+                  </li>
+                  <li className="flex items-center">
+                    <ArrowRight className="h-5 w-5 text-blue-600 mr-2" />
+                    <span>Customer-centric approach</span>
+                  </li>
+                  <li className="flex items-center">
+                    <ArrowRight className="h-5 w-5 text-blue-600 mr-2" />
+                    <span>Innovative solutions</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-lg animate-on-scroll opacity-0">
+                <h3 className="text-2xl font-display font-bold mb-4">Why Choose Us?</h3>
+                <ul className="space-y-4">
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Users className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <div className="ml-4">
+                      <h4 className="text-lg font-semibold">Expert Team</h4>
+                      <p className="text-gray-600">Skilled professionals with years of experience</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Code className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <div className="ml-4">
+                      <h4 className="text-lg font-semibold">Quality Code</h4>
+                      <p className="text-gray-600">Clean, maintainable, and scalable solutions</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Globe className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <div className="ml-4">
+                      <h4 className="text-lg font-semibold">Global Reach</h4>
+                      <p className="text-gray-600">Serving clients worldwide with local expertise</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Portfolio Section */}
+      <section id="portfolio" className="section-padding bg-white">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 animate-on-scroll opacity-0">
+              Our Portfolio
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto animate-on-scroll opacity-0">
+              Explore our latest projects and see how we've helped businesses achieve their goals
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {portfolioItems.map((item, index) => (
+              <div key={index} className="group relative overflow-hidden rounded-lg shadow-lg animate-on-scroll opacity-0">
+                <div className="aspect-w-16 aspect-h-9 bg-gray-200">
+                  <div className={`w-full h-full ${item.bgClass}`}></div>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-300">
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <h3 className="text-white text-xl font-semibold mb-2">{item.title}</h3>
+                    <p className="text-gray-200 text-sm">{item.description}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Stats Section */}
       <section className="section-padding bg-blue-600 text-white">
         <div className="container mx-auto">
@@ -235,6 +334,39 @@ const stats = [
   { value: "250+", label: "Projects Completed" },
   { value: "10+", label: "Years Experience" },
   { value: "95%", label: "Client Satisfaction" },
+];
+
+const portfolioItems = [
+  {
+    title: "E-commerce Platform",
+    description: "Modern online shopping experience with advanced features",
+    bgClass: "bg-blue-100",
+  },
+  {
+    title: "Healthcare App",
+    description: "Patient management system for medical facilities",
+    bgClass: "bg-green-100",
+  },
+  {
+    title: "Financial Dashboard",
+    description: "Real-time analytics and reporting platform",
+    bgClass: "bg-purple-100",
+  },
+  {
+    title: "Educational Platform",
+    description: "Online learning management system",
+    bgClass: "bg-yellow-100",
+  },
+  {
+    title: "Social Network",
+    description: "Community platform with real-time features",
+    bgClass: "bg-pink-100",
+  },
+  {
+    title: "IoT Dashboard",
+    description: "Device monitoring and control interface",
+    bgClass: "bg-indigo-100",
+  },
 ];
 
 export default Index;
