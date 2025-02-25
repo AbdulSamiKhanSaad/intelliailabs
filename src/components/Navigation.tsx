@@ -2,10 +2,17 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,6 +22,19 @@ const Navigation = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      navigate("/");
+    }
+  };
 
   return (
     <nav
@@ -36,7 +56,29 @@ const Navigation = () => {
               <NavLink href="#services">Services</NavLink>
               <NavLink href="#about">About</NavLink>
               <NavLink href="#portfolio">Portfolio</NavLink>
-              <Button className="bg-blue-600 hover:bg-blue-700">Get Free Consultation</Button>
+              {user ? (
+                <>
+                  <span className="text-gray-700">
+                    Welcome, {user.firstName || 'User'}
+                  </span>
+                  <Button
+                    onClick={handleSignOut}
+                    variant="outline"
+                  >
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onClick={() => navigate("/auth")}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  Sign In
+                </Button>
+              )}
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                Get Free Consultation
+              </Button>
             </div>
           </div>
 
@@ -65,6 +107,27 @@ const Navigation = () => {
               <MobileNavLink href="#portfolio" onClick={() => setIsOpen(false)}>
                 Portfolio
               </MobileNavLink>
+              {user ? (
+                <>
+                  <div className="px-3 py-2 text-gray-700">
+                    Welcome, {user.firstName || 'User'}
+                  </div>
+                  <Button
+                    onClick={handleSignOut}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onClick={() => navigate("/auth")}
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                >
+                  Sign In
+                </Button>
+              )}
               <Button className="w-full bg-blue-600 hover:bg-blue-700 mt-4">
                 Get Free Consultation
               </Button>
