@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { ConsultationModal } from "./ConsultationModal";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -46,7 +47,7 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
             <a href="/" className="text-xl font-display font-bold">
-              Modern<span className="text-blue-600">Solutions</span>
+              Intelli<span className="text-blue-600">AI Labs</span>
             </a>
           </div>
 
@@ -76,9 +77,7 @@ const Navigation = () => {
                   Sign In
                 </Button>
               )}
-              <Button className="bg-blue-600 hover:bg-blue-700">
-                Get Free Consultation
-              </Button>
+              <ConsultationModal />
             </div>
           </div>
 
@@ -128,9 +127,7 @@ const Navigation = () => {
                   Sign In
                 </Button>
               )}
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 mt-4">
-                Get Free Consultation
-              </Button>
+              <ConsultationModal />
             </div>
           </div>
         )}
