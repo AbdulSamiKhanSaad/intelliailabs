@@ -38,12 +38,23 @@ export default function ConsultationForm() {
     setIsLoading(true);
 
     try {
-      // Cast the client to any to bypass type checking for this specific operation
-      const { error } = await (supabase as any)
+      // Insert consultation
+      const { data: consultation, error: insertError } = await (supabase as any)
         .from('consultations')
-        .insert([formData]);
+        .insert([formData])
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (insertError) throw insertError;
+
+      // Send email notification
+      const { error: notificationError } = await supabase.functions.invoke('notify-consultation', {
+        body: { consultation }
+      });
+
+      if (notificationError) {
+        console.error('Failed to send notification:', notificationError);
+      }
 
       toast({
         title: "Success!",
