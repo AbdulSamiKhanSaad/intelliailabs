@@ -44,12 +44,19 @@ export default function AdminDashboard() {
   }, []);
 
   const checkAdminAccess = async () => {
-    const { data: roles } = await supabase
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      navigate('/');
+      return;
+    }
+
+    const { data: roles } = await (supabase as any)
       .from('user_roles')
       .select('role')
-      .eq('user_id', supabase.auth.user()?.id);
+      .eq('user_id', user.id);
 
-    if (!roles?.some(role => role.role === 'admin')) {
+    if (!roles?.some((roleObj: any) => roleObj.role === 'admin')) {
       navigate('/');
       toast({
         title: "Access Denied",
