@@ -224,7 +224,7 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-4">
               <h3 className="text-xl font-display font-bold text-white">
-                Modern<span className="text-blue-600">Solutions</span>
+                Intelli<span className="text-blue-600">AI Labs</span>
               </h3>
               <p className="text-sm">
                 Transforming ideas into digital reality with innovative solutions
@@ -247,8 +247,8 @@ const Index = () => {
               <ul className="space-y-2 text-sm">
                 <li>123 Business Street</li>
                 <li>City, State 12345</li>
-                <li>Phone: (123) 456-7890</li>
-                <li>Email: info@modernsolutions.com</li>
+                <li>Phone: (+92) 332-855-6537</li>
+                <li>Email: itelliailabs@gmail.com</li>
               </ul>
             </div>
             
@@ -259,19 +259,19 @@ const Index = () => {
                    className="hover:text-blue-400 transition-colors">
                   <Facebook className="h-6 w-6" />
                 </a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"
+                <a href="https://x.com/intelliailabs" target="_blank" rel="noopener noreferrer"
                    className="hover:text-blue-400 transition-colors">
                   <Twitter className="h-6 w-6" />
                 </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
+                <a href="https://instagram.com/intelliailabs" target="_blank" rel="noopener noreferrer"
                    className="hover:text-blue-400 transition-colors">
                   <Instagram className="h-6 w-6" />
                 </a>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"
+                <a href="https://linkedin.com/intelliailabs" target="_blank" rel="noopener noreferrer"
                    className="hover:text-blue-400 transition-colors">
                   <Linkedin className="h-6 w-6" />
                 </a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer"
+                <a href="https://youtube.com/intelliailabs" target="_blank" rel="noopener noreferrer"
                    className="hover:text-blue-400 transition-colors">
                   <Youtube className="h-6 w-6" />
                 </a>
