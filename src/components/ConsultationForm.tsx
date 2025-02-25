@@ -38,10 +38,10 @@ export default function ConsultationForm() {
     setIsLoading(true);
 
     try {
-      // @ts-ignore - Temporarily ignore type checking for the database call
-      const { error } = await supabase
+      // Cast the client to any to bypass type checking for this specific operation
+      const { error } = await (supabase as any)
         .from('consultations')
-        .insert(formData);
+        .insert([formData]);
 
       if (error) throw error;
 
