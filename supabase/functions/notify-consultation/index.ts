@@ -15,35 +15,12 @@ serve(async (req) => {
   }
 
   try {
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    )
-
-    // Get admin emails
-    const { data: adminRoles } = await supabase
-      .from('user_roles')
-      .select('user_id')
-      .eq('role', 'admin')
-
-    if (!adminRoles?.length) {
-      throw new Error('No admin users found')
-    }
-
-    const { data: adminProfiles } = await supabase
-      .from('profiles')
-      .select('email')
-      .in('id', adminRoles.map(role => role.user_id))
-
-    const adminEmails = adminProfiles?.map(profile => profile.email).filter(Boolean) ?? []
-
-    // Get consultation details from request body
     const { consultation } = await req.json()
 
-    // Send email to admins
+    // Send email to admin
     const { data: emailResponse, error: emailError } = await resend.emails.send({
-      from: 'Consultation Requests <onboarding@resend.dev>',
-      to: adminEmails,
+      from: 'IntelliAI Labs <onboarding@resend.dev>',
+      to: ['itelliailabs@gmail.com'], // Replace with your admin email
       subject: 'New Consultation Request',
       html: `
         <h1>New Consultation Request</h1>
@@ -57,6 +34,23 @@ serve(async (req) => {
     })
 
     if (emailError) throw emailError
+
+    // Send confirmation email to user
+    const { error: userEmailError } = await resend.emails.send({
+      from: 'IntelliAI Labs <onboarding@resend.dev>',
+      to: [consultation.email],
+      subject: 'We received your consultation request',
+      html: `
+        <h1>Thank you for your consultation request!</h1>
+        <p>Dear ${consultation.name},</p>
+        <p>We have received your consultation request and our team will review it shortly. 
+        We aim to respond within 24-48 business hours.</p>
+        <p>Your message: "${consultation.message}"</p>
+        <p>Best regards,<br>The IntelliAI Labs Team</p>
+      `,
+    })
+
+    if (userEmailError) throw userEmailError
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { 'Content-Type': 'application/json', ...corsHeaders },

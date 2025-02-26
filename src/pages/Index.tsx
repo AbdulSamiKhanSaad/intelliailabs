@@ -210,10 +210,7 @@ const Index = () => {
             <p className="text-gray-600 mb-8 animate-on-scroll opacity-0">
               Let's discuss how we can help bring your vision to life
             </p>
-            <Button className="bg-blue-600 hover:bg-blue-700 animate-on-scroll opacity-0">
-              Get Free Consultation
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <ConsultationModal />
           </div>
         </div>
       </section>
@@ -280,7 +277,7 @@ const Index = () => {
           </div>
           
           <div className="border-t border-gray-800 mt-12 pt-8 text-sm text-center">
-            <p>&copy; {new Date().getFullYear()} ModernSolutions. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} IntelliAI Labs. All rights reserved.</p>
           </div>
         </div>
       </footer>
@@ -293,6 +290,17 @@ const ServiceCard = ({ icon: Icon, title, description }: any) => (
     <Icon className="h-12 w-12 text-blue-600 mb-4" />
     <h3 className="text-xl font-display font-semibold mb-3">{title}</h3>
     <p className="text-gray-600">{description}</p>
+  </div>
+);
+
+const ConsultationModal = () => (
+  <div className="bg-white p-6 rounded-lg shadow-lg animate-on-scroll opacity-0">
+    <h3 className="text-2xl font-display font-bold mb-4">Get Free Consultation</h3>
+    <p className="text-gray-600 mb-4">Let's discuss how we can help bring your vision to life</p>
+    <Button className="bg-blue-600 hover:bg-blue-700">
+      Schedule Now
+      <ArrowRight className="ml-2 h-4 w-4" />
+    </Button>
   </div>
 );
 
