@@ -9,19 +9,18 @@ import { useToast } from "@/components/ui/use-toast";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/lib/auth";
 
-type ConsultationFormData = {
+interface ConsultationFormData {
   user_id?: string;
   name: string;
   email: string;
-  phone: string;
-  company: string;
+  phone?: string;
+  company?: string;
   message: string;
-};
+}
 
 export default function ConsultationForm() {
   const { user } = useAuth();
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   
   const [formData, setFormData] = useState<ConsultationFormData>({
@@ -38,8 +37,7 @@ export default function ConsultationForm() {
     setIsLoading(true);
 
     try {
-      // Insert consultation
-      const { data: consultation, error: insertError } = await (supabase as any)
+      const { data: consultation, error: insertError } = await supabase
         .from('consultations')
         .insert([formData])
         .select()
