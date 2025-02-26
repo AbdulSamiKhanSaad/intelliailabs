@@ -26,17 +26,34 @@ export default function Auth() {
   });
 
   useEffect(() => {
-    // Check if we're in a password reset flow
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const accessToken = hashParams.get("access_token");
-    const type = hashParams.get("type");
+    const handlePasswordReset = async () => {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const access_token = hashParams.get("access_token");
+      const type = hashParams.get("type");
 
-    if (type === "recovery" && accessToken) {
-      setIsResetPassword(true);
-      // Clear the hash without triggering a reload
-      window.history.replaceState(null, '', window.location.pathname);
-    }
-  }, [location]);
+      if (type === "recovery" && access_token) {
+        // Set the session with the access token
+        const { data, error } = await supabase.auth.setSession({
+          access_token,
+          refresh_token: hashParams.get("refresh_token") || "",
+        });
+
+        if (!error && data?.session) {
+          setIsResetPassword(true);
+          // Clear the hash without triggering a reload
+          window.history.replaceState(null, '', window.location.pathname);
+        } else {
+          toast({
+            title: "Error",
+            description: "Invalid or expired reset link. Please try again.",
+            variant: "destructive",
+          });
+        }
+      }
+    };
+
+    handlePasswordReset();
+  }, [location, toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,18 +65,22 @@ export default function Auth() {
           throw new Error("Passwords do not match");
         }
 
-        const { error } = await supabase.auth.updateUser({
+        const { data, error } = await supabase.auth.updateUser({
           password: formData.password
         });
 
         if (error) throw error;
 
+        // Sign out after successful password reset
+        await supabase.auth.signOut();
+
         toast({
           title: "Success",
-          description: "Your password has been reset successfully.",
+          description: "Your password has been reset successfully. Please sign in with your new password.",
         });
 
-        navigate("/");
+        setIsResetPassword(false);
+        navigate("/auth");
       } else if (isForgotPassword) {
         const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
           redirectTo: `${window.location.origin}/auth`,
