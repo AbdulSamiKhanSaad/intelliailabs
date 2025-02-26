@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,24 +12,57 @@ export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isResetPassword, setIsResetPassword] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    confirmPassword: "",
     firstName: "",
     lastName: "",
   });
+
+  useEffect(() => {
+    // Check if we're in a password reset flow
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get("access_token");
+    const type = hashParams.get("type");
+
+    if (type === "recovery" && accessToken) {
+      setIsResetPassword(true);
+      // Clear the hash without triggering a reload
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  }, [location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      if (isForgotPassword) {
+      if (isResetPassword) {
+        if (formData.password !== formData.confirmPassword) {
+          throw new Error("Passwords do not match");
+        }
+
+        const { error } = await supabase.auth.updateUser({
+          password: formData.password
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Your password has been reset successfully.",
+        });
+
+        navigate("/");
+      } else if (isForgotPassword) {
         const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
-          redirectTo: `${window.location.origin}/auth/reset-password`,
+          redirectTo: `${window.location.origin}/auth`,
         });
         
         if (error) throw error;
@@ -81,29 +114,34 @@ export default function Auth() {
       <Card className="max-w-md w-full space-y-8 p-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {isForgotPassword 
+            {isResetPassword
               ? "Reset your password"
-              : isSignUp 
-                ? "Create your account" 
-                : "Sign in to your account"}
+              : isForgotPassword 
+                ? "Forgot your password"
+                : isSignUp 
+                  ? "Create your account" 
+                  : "Sign in to your account"}
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="email">Email address</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-              />
-            </div>
-            {!isForgotPassword && (
+            {!isResetPassword && (
+              <div>
+                <Label htmlFor="email">Email address</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                />
+              </div>
+            )}
+            
+            {(isResetPassword || (!isForgotPassword && !isResetPassword)) && (
               <div>
                 <Label htmlFor="password">Password</Label>
                 <Input
@@ -118,6 +156,23 @@ export default function Auth() {
                 />
               </div>
             )}
+
+            {isResetPassword && (
+              <div>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    setFormData({ ...formData, confirmPassword: e.target.value })
+                  }
+                />
+              </div>
+            )}
+
             {isSignUp && (
               <>
                 <div>
@@ -154,6 +209,8 @@ export default function Auth() {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading
                 ? "Loading..."
+                : isResetPassword
+                ? "Update Password"
                 : isForgotPassword
                 ? "Send Reset Instructions"
                 : isSignUp
@@ -163,40 +220,42 @@ export default function Auth() {
           </div>
         </form>
 
-        <div className="text-center space-y-2">
-          {!isForgotPassword && (
-            <Button
-              variant="link"
-              onClick={() => {
-                setIsForgotPassword(false);
-                setIsSignUp(!isSignUp);
-              }}
-              className="text-sm"
-            >
-              {isSignUp
-                ? "Already have an account? Sign in"
-                : "Don't have an account? Sign up"}
-            </Button>
-          )}
-          {!isSignUp && !isForgotPassword && (
-            <Button
-              variant="link"
-              onClick={() => setIsForgotPassword(true)}
-              className="text-sm block mx-auto"
-            >
-              Forgot your password?
-            </Button>
-          )}
-          {isForgotPassword && (
-            <Button
-              variant="link"
-              onClick={() => setIsForgotPassword(false)}
-              className="text-sm"
-            >
-              Back to sign in
-            </Button>
-          )}
-        </div>
+        {!isResetPassword && (
+          <div className="text-center space-y-2">
+            {!isForgotPassword && (
+              <Button
+                variant="link"
+                onClick={() => {
+                  setIsForgotPassword(false);
+                  setIsSignUp(!isSignUp);
+                }}
+                className="text-sm"
+              >
+                {isSignUp
+                  ? "Already have an account? Sign in"
+                  : "Don't have an account? Sign up"}
+              </Button>
+            )}
+            {!isSignUp && !isForgotPassword && (
+              <Button
+                variant="link"
+                onClick={() => setIsForgotPassword(true)}
+                className="text-sm block mx-auto"
+              >
+                Forgot your password?
+              </Button>
+            )}
+            {isForgotPassword && (
+              <Button
+                variant="link"
+                onClick={() => setIsForgotPassword(false)}
+                className="text-sm"
+              >
+                Back to sign in
+              </Button>
+            )}
+          </div>
+        )}
       </Card>
     </div>
   );
