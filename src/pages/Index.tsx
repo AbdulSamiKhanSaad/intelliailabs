@@ -61,7 +61,7 @@ const Index = () => {
                 Get Started
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
-              <Button variant="outline"><a href = "intelliailabs.blogspot.com" target="_blank" rel="noopener noreferrer">Learn More</a></Button>
+              <Button variant="outline"><a href = "intelliailabs.blogspot.com" target="_blank">Learn More</a></Button>
             </div>
           </div>
         </div>
