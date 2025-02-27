@@ -1,5 +1,4 @@
 
 project_id = "donplweigpesvzqczcvq"
 
-[[functions]]
-name = "notify-consultation"
+[functions.notify-consultation]
