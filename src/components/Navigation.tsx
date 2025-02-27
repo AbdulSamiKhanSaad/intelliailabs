@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -19,7 +19,6 @@ const Navigation = () => {
   const [scrolled, setScrolled] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -44,23 +43,6 @@ const Navigation = () => {
     }
   };
 
-  const scrollToConsultation = () => {
-    const element = document.getElementById('consultation-anchor');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      // If not on a page with the anchor, navigate to a page that has it
-      if (location.pathname !== '/services') {
-        navigate('/services#consultation-anchor');
-      } else {
-        window.scrollTo({
-          top: document.body.scrollHeight,
-          behavior: 'smooth',
-        });
-      }
-    }
-  };
-
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-300 ${
@@ -71,7 +53,7 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
             <Link to="/" className="text-xl font-display font-bold">
-              Intelli<span className="text-indigo-600">AI Labs</span>
+              Intelli<span className="text-blue-600">AI Labs</span>
             </Link>
           </div>
 
@@ -81,25 +63,18 @@ const Navigation = () => {
               <NavLink to="/services">Services</NavLink>
               <NavLink to="/portfolio">Portfolio</NavLink>
               <NavLink to="/about">About</NavLink>
-              <Button 
-                onClick={scrollToConsultation}
-                variant="outline" 
-                className="text-indigo-600 border-indigo-200 hover:bg-indigo-50"
-              >
-                Request Consultation
-              </Button>
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
                       variant="outline" 
-                      className="flex items-center space-x-2 border-indigo-200 hover:bg-indigo-50"
+                      className="flex items-center space-x-2 border-gray-300 hover:bg-gray-100"
                     >
                       <User className="h-4 w-4" />
                       <span>{user.firstName || 'Account'}</span>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 bg-white shadow-lg rounded-md border border-indigo-100 p-1 z-50">
+                  <DropdownMenuContent className="w-56 bg-white shadow-lg rounded-md border border-gray-200 p-1 z-50">
                     <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
                       View Profile
                     </DropdownMenuItem>
@@ -111,11 +86,12 @@ const Navigation = () => {
               ) : (
                 <Button
                   onClick={() => navigate("/auth")}
-                  className="bg-indigo-600 hover:bg-indigo-700"
+                  className="bg-blue-600 hover:bg-blue-700"
                 >
                   Sign In
                 </Button>
               )}
+              <ConsultationModal />
             </div>
           </div>
 
@@ -144,15 +120,6 @@ const Navigation = () => {
               <MobileNavLink to="/about" onClick={() => setIsOpen(false)}>
                 About
               </MobileNavLink>
-              <button 
-                onClick={() => {
-                  setIsOpen(false);
-                  scrollToConsultation();
-                }}
-                className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 transition-colors duration-300"
-              >
-                Request Consultation
-              </button>
               {user ? (
                 <>
                   <div className="px-3 py-2">
@@ -179,11 +146,14 @@ const Navigation = () => {
                     navigate("/auth");
                     setIsOpen(false);
                   }}
-                  className="w-full bg-indigo-600 hover:bg-indigo-700"
+                  className="w-full bg-blue-600 hover:bg-blue-700"
                 >
                   Sign In
                 </Button>
               )}
+              <div className="pt-2">
+                <ConsultationModal />
+              </div>
             </div>
           </div>
         )}
@@ -195,7 +165,7 @@ const Navigation = () => {
 const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => (
   <Link
     to={to}
-    className="text-gray-700 hover:text-indigo-600 transition-colors duration-300 font-medium"
+    className="text-gray-700 hover:text-blue-600 transition-colors duration-300 font-medium"
   >
     {children}
   </Link>
@@ -213,7 +183,7 @@ const MobileNavLink = ({
   <Link
     to={to}
     onClick={onClick}
-    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 transition-colors duration-300"
+    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-300"
   >
     {children}
   </Link>

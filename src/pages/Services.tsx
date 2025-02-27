@@ -35,11 +35,11 @@ const Services = () => {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-br from-purple-50 to-indigo-100">
+      <section className="pt-32 pb-16 bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-6xl font-display font-bold mb-6 animate-fadeIn">
-              Our <span className="text-indigo-600">Services</span>
+              Our <span className="text-blue-600">Services</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-600 mb-8 animate-fadeIn delay-100">
               Comprehensive digital solutions tailored to meet your business needs
@@ -53,12 +53,12 @@ const Services = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
-              <Card key={index} className="animate-on-scroll opacity-0 hover:shadow-lg transition-all duration-300 border-indigo-100">
-                <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-50">
-                  <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-                    <service.icon className="h-6 w-6 text-indigo-600" />
+              <Card key={index} className="animate-on-scroll opacity-0 hover:shadow-lg transition-all duration-300">
+                <CardHeader>
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                    <service.icon className="h-6 w-6 text-blue-600" />
                   </div>
-                  <CardTitle className="text-indigo-800">{service.title}</CardTitle>
+                  <CardTitle>{service.title}</CardTitle>
                   <CardDescription>{service.shortDesc}</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -66,14 +66,14 @@ const Services = () => {
                   <ul className="mt-4 space-y-2">
                     {service.features.map((feature, i) => (
                       <li key={i} className="flex items-start">
-                        <ArrowRight className="h-5 w-5 text-indigo-600 mr-2 flex-shrink-0 mt-0.5" />
+                        <ArrowRight className="h-5 w-5 text-blue-600 mr-2 flex-shrink-0 mt-0.5" />
                         <span>{feature}</span>
                       </li>
                     ))}
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full bg-indigo-600 hover:bg-indigo-700">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700">
                     Learn More
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -85,7 +85,7 @@ const Services = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-indigo-600 text-white">
+      <section className="py-16 bg-blue-600 text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 animate-on-scroll opacity-0">
@@ -94,7 +94,7 @@ const Services = () => {
             <p className="text-lg mb-8 animate-on-scroll opacity-0">
               Let's discuss how we can help bring your vision to life
             </p>
-            <div className="animate-on-scroll opacity-0" id="consultation-anchor">
+            <div className="animate-on-scroll opacity-0">
               <ConsultationModal />
             </div>
           </div>
