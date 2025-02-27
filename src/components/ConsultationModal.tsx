@@ -11,11 +11,11 @@ export function ConsultationModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium">
+        <Button className="bg-blue-600 hover:bg-blue-700">
           Get Free Consultation
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] lg:max-w-[800px] bg-white">
+      <DialogContent className="sm:max-w-[600px] lg:max-w-[800px]">
         <ConsultationForm />
       </DialogContent>
     </Dialog>
