@@ -1,12 +1,18 @@
 
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { ConsultationModal } from "./ConsultationModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,7 +46,7 @@ const Navigation = () => {
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled ? "bg-white/80 backdrop-blur-lg shadow-sm" : "bg-transparent"
+        scrolled ? "bg-white/95 backdrop-blur-lg shadow-sm" : "bg-transparent"
       }`}
     >
       <div className="container mx-auto px-4">
@@ -58,17 +64,25 @@ const Navigation = () => {
               <NavLink to="/portfolio">Portfolio</NavLink>
               <NavLink to="/about">About</NavLink>
               {user ? (
-                <>
-                  <span className="text-gray-700">
-                    Welcome, {user.firstName || 'User'}
-                  </span>
-                  <Button
-                    onClick={handleSignOut}
-                    variant="outline"
-                  >
-                    Sign Out
-                  </Button>
-                </>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      className="flex items-center space-x-2 border-gray-300 hover:bg-gray-100"
+                    >
+                      <User className="h-4 w-4" />
+                      <span>{user.firstName || 'Account'}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56 bg-white shadow-lg rounded-md border border-gray-200 p-1 z-50">
+                    <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+                      View Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600">
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
                 <Button
                   onClick={() => navigate("/auth")}
@@ -93,7 +107,7 @@ const Navigation = () => {
 
         {isOpen && (
           <div className="md:hidden animate-slideIn">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white shadow-lg rounded-md">
               <MobileNavLink to="/" onClick={() => setIsOpen(false)}>
                 Home
               </MobileNavLink>
@@ -108,26 +122,38 @@ const Navigation = () => {
               </MobileNavLink>
               {user ? (
                 <>
-                  <div className="px-3 py-2 text-gray-700">
-                    Welcome, {user.firstName || 'User'}
+                  <div className="px-3 py-2">
+                    <p className="text-sm text-gray-500">Signed in as</p>
+                    <p className="font-medium">{user.email}</p>
                   </div>
+                  <MobileNavLink to="/profile" onClick={() => setIsOpen(false)}>
+                    View Profile
+                  </MobileNavLink>
                   <Button
-                    onClick={handleSignOut}
+                    onClick={() => {
+                      handleSignOut();
+                      setIsOpen(false);
+                    }}
                     variant="outline"
-                    className="w-full"
+                    className="w-full justify-start text-red-600 border-red-200"
                   >
                     Sign Out
                   </Button>
                 </>
               ) : (
                 <Button
-                  onClick={() => navigate("/auth")}
+                  onClick={() => {
+                    navigate("/auth");
+                    setIsOpen(false);
+                  }}
                   className="w-full bg-blue-600 hover:bg-blue-700"
                 >
                   Sign In
                 </Button>
               )}
-              <ConsultationModal />
+              <div className="pt-2">
+                <ConsultationModal />
+              </div>
             </div>
           </div>
         )}
