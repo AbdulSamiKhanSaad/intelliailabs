@@ -11,7 +11,7 @@ export function ConsultationModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium">
+        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium">
           Get Free Consultation
         </Button>
       </DialogTrigger>

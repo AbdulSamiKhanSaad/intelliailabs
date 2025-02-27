@@ -79,9 +79,9 @@ export default function ConsultationForm() {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto bg-white shadow-lg border border-gray-200">
-      <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-t-lg">
-        <CardTitle className="text-2xl font-display text-gray-800">Get Free Consultation</CardTitle>
+    <Card className="w-full max-w-2xl mx-auto bg-white shadow-lg border border-indigo-100">
+      <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-100 rounded-t-lg">
+        <CardTitle className="text-2xl font-display text-indigo-800">Get Free Consultation</CardTitle>
         <CardDescription className="text-gray-600">
           Fill out the form below and our team will get back to you shortly.
         </CardDescription>
@@ -97,7 +97,7 @@ export default function ConsultationForm() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
-                className="border-gray-300 focus:border-blue-500 bg-white"
+                className="border-indigo-200 focus:border-indigo-500 bg-white"
               />
             </div>
             <div className="space-y-2">
@@ -109,7 +109,7 @@ export default function ConsultationForm() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
-                className="border-gray-300 focus:border-blue-500 bg-white"
+                className="border-indigo-200 focus:border-indigo-500 bg-white"
               />
             </div>
             <div className="space-y-2">
@@ -120,7 +120,7 @@ export default function ConsultationForm() {
                 placeholder="+1 (555) 000-0000"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="border-gray-300 focus:border-blue-500 bg-white"
+                className="border-indigo-200 focus:border-indigo-500 bg-white"
               />
             </div>
             <div className="space-y-2">
@@ -130,7 +130,7 @@ export default function ConsultationForm() {
                 placeholder="Your Company"
                 value={formData.company}
                 onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                className="border-gray-300 focus:border-blue-500 bg-white"
+                className="border-indigo-200 focus:border-indigo-500 bg-white"
               />
             </div>
           </div>
@@ -138,7 +138,7 @@ export default function ConsultationForm() {
             <Label htmlFor="message" className="text-gray-700">How can we help?</Label>
             <textarea
               id="message"
-              className="min-h-[100px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-[100px] w-full rounded-md border border-indigo-200 bg-white px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Tell us about your project or requirements..."
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -147,7 +147,7 @@ export default function ConsultationForm() {
           </div>
           <Button 
             type="submit" 
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2" 
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2" 
             disabled={isLoading}
           >
             {isLoading ? "Submitting..." : "Request Consultation"}
