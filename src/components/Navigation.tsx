@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -46,17 +46,17 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
-            <a href="/" className="text-xl font-display font-bold">
+            <Link to="/" className="text-xl font-display font-bold">
               Intelli<span className="text-blue-600">AI Labs</span>
-            </a>
+            </Link>
           </div>
 
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-8">
-              <NavLink href="#home">Home</NavLink>
-              <NavLink href="#services">Services</NavLink>
-              <NavLink href="#about">About</NavLink>
-              <NavLink href="#portfolio">Portfolio</NavLink>
+              <NavLink to="/">Home</NavLink>
+              <NavLink to="/services">Services</NavLink>
+              <NavLink to="/portfolio">Portfolio</NavLink>
+              <NavLink to="/about">About</NavLink>
               {user ? (
                 <>
                   <span className="text-gray-700">
@@ -94,17 +94,17 @@ const Navigation = () => {
         {isOpen && (
           <div className="md:hidden animate-slideIn">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              <MobileNavLink href="#home" onClick={() => setIsOpen(false)}>
+              <MobileNavLink to="/" onClick={() => setIsOpen(false)}>
                 Home
               </MobileNavLink>
-              <MobileNavLink href="#services" onClick={() => setIsOpen(false)}>
+              <MobileNavLink to="/services" onClick={() => setIsOpen(false)}>
                 Services
               </MobileNavLink>
-              <MobileNavLink href="#about" onClick={() => setIsOpen(false)}>
-                About
-              </MobileNavLink>
-              <MobileNavLink href="#portfolio" onClick={() => setIsOpen(false)}>
+              <MobileNavLink to="/portfolio" onClick={() => setIsOpen(false)}>
                 Portfolio
+              </MobileNavLink>
+              <MobileNavLink to="/about" onClick={() => setIsOpen(false)}>
+                About
               </MobileNavLink>
               {user ? (
                 <>
@@ -136,31 +136,31 @@ const Navigation = () => {
   );
 };
 
-const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
-  <a
-    href={href}
+const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => (
+  <Link
+    to={to}
     className="text-gray-700 hover:text-blue-600 transition-colors duration-300 font-medium"
   >
     {children}
-  </a>
+  </Link>
 );
 
 const MobileNavLink = ({
-  href,
+  to,
   onClick,
   children,
 }: {
-  href: string;
+  to: string;
   onClick: () => void;
   children: React.ReactNode;
 }) => (
-  <a
-    href={href}
+  <Link
+    to={to}
     onClick={onClick}
     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-300"
   >
     {children}
-  </a>
+  </Link>
 );
 
 export default Navigation;
