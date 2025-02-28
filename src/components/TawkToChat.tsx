@@ -10,10 +10,14 @@ declare global {
 
 const TawkToChat = () => {
   useEffect(() => {
+    // Initialize Tawk_API
+    window.Tawk_API = window.Tawk_API || {};
+    window.Tawk_LoadStart = new Date();
+    
     // Load Tawk.to script
     const script = document.createElement('script');
     script.async = true;
-    script.src = 'https://embed.tawk.to/YOUR_TAWK_TO_PROPERTY_ID/YOUR_TAWK_TO_WIDGET_ID';
+    script.src = 'https://embed.tawk.to/67c0bcf2289a9c19182c78cc/1il4e45s0';
     script.charset = 'UTF-8';
     script.setAttribute('crossorigin', '*');
     
