@@ -10,7 +10,7 @@ import ContactSection from "@/components/sections/ContactSection";
 import FooterSection from "@/components/sections/FooterSection";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight, Star, ChevronLeft, ChevronRight } from "lucide-react";
 
 const Index = () => {
   const [animatedStats, setAnimatedStats] = useState({
@@ -20,8 +20,70 @@ const Index = () => {
     satisfaction: 0
   });
   
+  const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
+  const [testimonialsToShow, setTestimonialsToShow] = useState([]);
   const statsRef = useRef(null);
   const statsAnimated = useRef(false);
+  const testimonialInterval = useRef(null);
+  
+  // Set up testimonials slideshow
+  useEffect(() => {
+    // Initialize with first 3 testimonials or fewer if not enough
+    const initialTestimonials = testimonials.slice(0, Math.min(3, testimonials.length));
+    setTestimonialsToShow(initialTestimonials);
+    
+    // Set up interval for testimonial rotation
+    testimonialInterval.current = setInterval(() => {
+      setCurrentTestimonialIndex(prevIndex => {
+        const nextIndex = (prevIndex + 1) % testimonials.length;
+        
+        // Update testimonials to show
+        const newTestimonialsToShow = [];
+        for (let i = 0; i < Math.min(3, testimonials.length); i++) {
+          const index = (nextIndex + i) % testimonials.length;
+          newTestimonialsToShow.push(testimonials[index]);
+        }
+        setTestimonialsToShow(newTestimonialsToShow);
+        
+        return nextIndex;
+      });
+    }, 5000); // Change testimonials every 5 seconds
+    
+    return () => {
+      if (testimonialInterval.current) {
+        clearInterval(testimonialInterval.current);
+      }
+    };
+  }, []);
+  
+  // Handle manual testimonial navigation
+  const navigateTestimonials = (direction) => {
+    let nextIndex;
+    
+    if (direction === 'prev') {
+      nextIndex = (currentTestimonialIndex - 1 + testimonials.length) % testimonials.length;
+    } else {
+      nextIndex = (currentTestimonialIndex + 1) % testimonials.length;
+    }
+    
+    setCurrentTestimonialIndex(nextIndex);
+    
+    // Update testimonials to show
+    const newTestimonialsToShow = [];
+    for (let i = 0; i < Math.min(3, testimonials.length); i++) {
+      const index = (nextIndex + i) % testimonials.length;
+      newTestimonialsToShow.push(testimonials[index]);
+    }
+    setTestimonialsToShow(newTestimonialsToShow);
+    
+    // Reset the interval
+    if (testimonialInterval.current) {
+      clearInterval(testimonialInterval.current);
+    }
+    testimonialInterval.current = setInterval(() => {
+      navigateTestimonials('next');
+    }, 5000);
+  };
 
   useEffect(() => {
     const observerOptions = {
@@ -153,7 +215,10 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Testimonials Section */}
+      <AboutSection />
+      <PortfolioSection />
+      
+      {/* Testimonials Section with Slideshow */}
       <section className="section-padding bg-gradient-to-br from-blue-50 to-indigo-50">
         <div className="container mx-auto">
           <div className="text-center mb-12">
@@ -165,28 +230,72 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="animate-on-scroll opacity-0 overflow-hidden hover-lift">
-                <CardContent className="p-6">
-                  <div className="flex mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 text-yellow-400 fill-yellow-400" />
-                    ))}
-                  </div>
-                  <p className="text-gray-700 mb-6 italic">"{testimonial.text}"</p>
-                  <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold mr-4">
-                      {testimonial.name.charAt(0)}
+          <div className="relative max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-6">
+              {testimonialsToShow.map((testimonial, index) => (
+                <Card key={`testimonial-${currentTestimonialIndex}-${index}`} 
+                      className="animate-on-scroll opacity-0 overflow-hidden hover-lift testimonial-card">
+                  <CardContent className="p-6">
+                    <div className="flex mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+                      ))}
                     </div>
-                    <div>
-                      <p className="font-semibold">{testimonial.name}</p>
-                      <p className="text-sm text-gray-500">{testimonial.company}</p>
+                    <p className="text-gray-700 mb-6 italic">"{testimonial.text}"</p>
+                    <div className="flex items-center">
+                      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold mr-4">
+                        {testimonial.name.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="font-semibold">{testimonial.name}</p>
+                        <p className="text-sm text-gray-500">{testimonial.company}</p>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
+            {/* Navigation arrows */}
+            <button 
+              onClick={() => navigateTestimonials('prev')} 
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-5 md:-translate-x-10 bg-white p-2 rounded-full shadow-md z-10 hover:bg-gray-100 transition-colors focus:outline-none"
+              aria-label="Previous testimonials"
+            >
+              <ChevronLeft className="h-6 w-6 text-blue-600" />
+            </button>
+            
+            <button 
+              onClick={() => navigateTestimonials('next')} 
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-5 md:translate-x-10 bg-white p-2 rounded-full shadow-md z-10 hover:bg-gray-100 transition-colors focus:outline-none"
+              aria-label="Next testimonials"
+            >
+              <ChevronRight className="h-6 w-6 text-blue-600" />
+            </button>
+            
+            {/* Dots indicator */}
+            <div className="flex justify-center mt-8">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setCurrentTestimonialIndex(index);
+                    const newTestimonialsToShow = [];
+                    for (let i = 0; i < Math.min(3, testimonials.length); i++) {
+                      const slideIndex = (index + i) % testimonials.length;
+                      newTestimonialsToShow.push(testimonials[slideIndex]);
+                    }
+                    setTestimonialsToShow(newTestimonialsToShow);
+                  }}
+                  className={`h-3 w-3 mx-1 rounded-full transition-colors ${
+                    index >= currentTestimonialIndex && index < currentTestimonialIndex + Math.min(3, testimonials.length) 
+                      ? 'bg-blue-600' 
+                      : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to testimonial group ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -216,8 +325,6 @@ const Index = () => {
         </div>
       </section>
       
-      <AboutSection />
-      <PortfolioSection />
       <ContactSection />
       <FooterSection />
     </div>
@@ -262,6 +369,26 @@ const testimonials = [
     text: "Their approach to project management is exceptional. Clear communication, meeting deadlines, and exceeding expectations are what make IntelliAI Labs stand out.",
     name: "Emma Rodriguez",
     company: "Global Solutions"
+  },
+  {
+    text: "We've worked with many development teams before, but IntelliAI Labs is truly different. Their attention to detail and technical expertise are unmatched in the industry.",
+    name: "David Thompson",
+    company: "Elevated Tech"
+  },
+  {
+    text: "The AI-powered analytics solution they built has given us insights we never thought possible. Our decision-making is now faster and based on real data.",
+    name: "Jennifer Wu",
+    company: "Data Insights Co."
+  },
+  {
+    text: "From the initial consultation to post-launch support, IntelliAI Labs has been a reliable partner throughout our digital transformation journey.",
+    name: "Robert Garcia",
+    company: "Modern Solutions"
+  },
+  {
+    text: "The mobile app they developed for our business received outstanding feedback from our customers. User engagement has increased by 65% since launch.",
+    name: "Sophia Patel",
+    company: "MobileFirst Inc."
   }
 ];
 
