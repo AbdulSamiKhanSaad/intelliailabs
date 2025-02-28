@@ -27,8 +27,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
+import Navigation from "@/components/Navigation";
+import { ClipboardList, Calendar as CalendarIcon, Loader2 } from "lucide-react";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -37,6 +40,8 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedConsultation, setSelectedConsultation] = useState<any>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isUpdateLoading, setIsUpdateLoading] = useState(false);
 
   useEffect(() => {
     checkAdminAccess();
@@ -51,7 +56,7 @@ export default function AdminDashboard() {
       return;
     }
 
-    const { data: roles } = await (supabase as any)
+    const { data: roles } = await supabase
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id);
@@ -67,17 +72,19 @@ export default function AdminDashboard() {
   };
 
   const fetchConsultations = async () => {
-    const { data, error } = await (supabase as any)
+    setIsLoading(true);
+    const { data, error } = await supabase
       .from('consultations')
-      .select('*')
+      .select('*, profiles(first_name, last_name, avatar_url)')
       .order('created_at', { ascending: false });
 
     if (error) {
       toast({
         title: "Error",
-        description: "Failed to fetch consultations.",
+        description: "Failed to fetch consultations: " + error.message,
         variant: "destructive",
       });
+      console.error("Error fetching consultations:", error);
     } else {
       setConsultations(data || []);
     }
@@ -85,7 +92,8 @@ export default function AdminDashboard() {
   };
 
   const updateConsultationStatus = async (id: string, status: string) => {
-    const { error } = await (supabase as any)
+    setIsUpdateLoading(true);
+    const { error } = await supabase
       .from('consultations')
       .update({ status })
       .eq('id', id);
@@ -93,9 +101,10 @@ export default function AdminDashboard() {
     if (error) {
       toast({
         title: "Error",
-        description: "Failed to update status.",
+        description: "Failed to update status: " + error.message,
         variant: "destructive",
       });
+      console.error("Error updating status:", error);
     } else {
       fetchConsultations();
       toast({
@@ -103,10 +112,12 @@ export default function AdminDashboard() {
         description: "Status updated successfully.",
       });
     }
+    setIsUpdateLoading(false);
   };
 
   const scheduleFollowUp = async (id: string, scheduled_at: Date) => {
-    const { error } = await (supabase as any)
+    setIsUpdateLoading(true);
+    const { error } = await supabase
       .from('consultations')
       .update({ 
         scheduled_at,
@@ -117,104 +128,204 @@ export default function AdminDashboard() {
     if (error) {
       toast({
         title: "Error",
-        description: "Failed to schedule follow-up.",
+        description: "Failed to schedule follow-up: " + error.message,
         variant: "destructive",
       });
+      console.error("Error scheduling follow-up:", error);
     } else {
       setSelectedConsultation(null);
+      setIsDialogOpen(false);
       fetchConsultations();
       toast({
         title: "Success",
         description: "Follow-up scheduled successfully.",
       });
     }
+    setIsUpdateLoading(false);
+  };
+
+  const getStatusBadgeColor = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'in_progress':
+        return 'bg-blue-100 text-blue-800';
+      case 'completed':
+        return 'bg-green-100 text-green-800';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+        <p className="mt-4 text-gray-600">Loading dashboard...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-6">Consultation Requests</h1>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Follow-up</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {consultations.map((consultation) => (
-            <TableRow key={consultation.id}>
-              <TableCell>{consultation.name}</TableCell>
-              <TableCell>{consultation.email}</TableCell>
-              <TableCell>
-                <Select
-                  value={consultation.status}
-                  onValueChange={(value) => updateConsultationStatus(consultation.id, value)}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="in_progress">In Progress</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                    <SelectItem value="cancelled">Cancelled</SelectItem>
-                  </SelectContent>
-                </Select>
-              </TableCell>
-              <TableCell>
-                {consultation.scheduled_at ? (
-                  format(new Date(consultation.scheduled_at), 'PPp')
-                ) : (
-                  'Not scheduled'
-                )}
-              </TableCell>
-              <TableCell>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      onClick={() => setSelectedConsultation(consultation)}
-                    >
-                      Schedule Follow-up
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Schedule Follow-up</DialogTitle>
-                      <DialogDescription>
-                        Pick a date and time for the follow-up meeting.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="py-4">
-                      <Calendar
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={setSelectedDate}
-                      />
-                    </div>
-                    <Button
-                      onClick={() => {
-                        if (selectedDate && selectedConsultation) {
-                          scheduleFollowUp(selectedConsultation.id, selectedDate);
-                        }
-                      }}
-                    >
-                      Confirm Schedule
-                    </Button>
-                  </DialogContent>
-                </Dialog>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      <div className="container mx-auto py-20 px-4">
+        <div className="my-10">
+          <h1 className="text-3xl font-bold mb-2 flex items-center">
+            <ClipboardList className="h-6 w-6 mr-2 text-blue-600" />
+            Admin Dashboard
+          </h1>
+          <p className="text-gray-600 mb-6">
+            Manage consultation requests and schedule follow-ups
+          </p>
+          
+          <div className="bg-white shadow-md rounded-lg overflow-hidden">
+            <div className="p-4 border-b bg-gray-50">
+              <h2 className="text-xl font-semibold">Consultation Requests</h2>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Follow-up</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {consultations.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                        No consultation requests found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    consultations.map((consultation) => (
+                      <TableRow key={consultation.id}>
+                        <TableCell className="font-medium">
+                          {consultation.name}
+                        </TableCell>
+                        <TableCell>{consultation.email}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium mr-2 ${getStatusBadgeColor(consultation.status)}`}>
+                              {consultation.status?.replace('_', ' ') || 'pending'}
+                            </span>
+                            <Select
+                              value={consultation.status || 'pending'}
+                              onValueChange={(value) => updateConsultationStatus(consultation.id, value)}
+                              disabled={isUpdateLoading}
+                            >
+                              <SelectTrigger className="w-[140px] h-8">
+                                <SelectValue placeholder="Change status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="pending">Pending</SelectItem>
+                                <SelectItem value="in_progress">In Progress</SelectItem>
+                                <SelectItem value="completed">Completed</SelectItem>
+                                <SelectItem value="cancelled">Cancelled</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {consultation.scheduled_at ? (
+                            <span className="flex items-center text-blue-600">
+                              <CalendarIcon className="h-4 w-4 mr-1" />
+                              {format(new Date(consultation.scheduled_at), 'PPp')}
+                            </span>
+                          ) : (
+                            <span className="text-gray-500">Not scheduled</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <Dialog open={isDialogOpen && selectedConsultation?.id === consultation.id} 
+                                 onOpenChange={(open) => {
+                                   setIsDialogOpen(open);
+                                   if (!open) setSelectedConsultation(null);
+                                 }}>
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                                onClick={() => {
+                                  setSelectedConsultation(consultation);
+                                  setIsDialogOpen(true);
+                                  setSelectedDate(consultation.scheduled_at ? new Date(consultation.scheduled_at) : undefined);
+                                }}
+                              >
+                                <CalendarIcon className="h-4 w-4 mr-1" />
+                                Schedule Follow-up
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Schedule Follow-up</DialogTitle>
+                                <DialogDescription>
+                                  Pick a date for the follow-up meeting with {consultation.name}.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <div className="py-4 flex justify-center">
+                                <Calendar
+                                  mode="single"
+                                  selected={selectedDate}
+                                  onSelect={setSelectedDate}
+                                  className="rounded-md border"
+                                  disabled={(date) => date < new Date()}
+                                />
+                              </div>
+                              <DialogFooter>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => {
+                                    setIsDialogOpen(false);
+                                    setSelectedConsultation(null);
+                                  }}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  onClick={() => {
+                                    if (selectedDate && selectedConsultation) {
+                                      scheduleFollowUp(selectedConsultation.id, selectedDate);
+                                    } else {
+                                      toast({
+                                        title: "Error",
+                                        description: "Please select a date for the follow-up.",
+                                        variant: "destructive",
+                                      });
+                                    }
+                                  }}
+                                  disabled={!selectedDate || isUpdateLoading}
+                                >
+                                  {isUpdateLoading ? (
+                                    <>
+                                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                      Scheduling...
+                                    </>
+                                  ) : (
+                                    "Confirm Schedule"
+                                  )}
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

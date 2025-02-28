@@ -15,6 +15,7 @@ interface ConsultationFormData {
   phone?: string;
   company?: string;
   message: string;
+  status?: string;
 }
 
 export default function ConsultationForm() {
@@ -28,7 +29,8 @@ export default function ConsultationForm() {
     phone: '',
     company: '',
     message: '',
-    user_id: user?.id
+    user_id: user?.id,
+    status: 'pending'
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,7 +67,8 @@ export default function ConsultationForm() {
         phone: '',
         company: '',
         message: '',
-        user_id: user?.id
+        user_id: user?.id,
+        status: 'pending'
       });
     } catch (error: any) {
       toast({

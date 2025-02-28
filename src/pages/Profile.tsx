@@ -19,7 +19,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Eye, EyeOff, User, KeyRound, MessageSquare } from "lucide-react";
+import { Eye, EyeOff, User, KeyRound, MessageSquare, Calendar, Clock } from "lucide-react";
 
 interface Consultation {
   id: string;
@@ -29,6 +29,8 @@ interface Consultation {
   phone?: string;
   company?: string;
   message: string;
+  status?: string;
+  scheduled_at?: string;
 }
 
 const Profile = () => {
@@ -126,6 +128,7 @@ const Profile = () => {
   };
 
   const formatDate = (dateString: string) => {
+    if (!dateString) return "N/A";
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
@@ -134,6 +137,22 @@ const Profile = () => {
       hour: '2-digit',
       minute: '2-digit'
     }).format(date);
+  };
+
+  // Helper function to get status badge color
+  const getStatusBadgeColor = (status?: string) => {
+    switch (status) {
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'in_progress':
+        return 'bg-blue-100 text-blue-800';
+      case 'completed':
+        return 'bg-green-100 text-green-800';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
   };
 
   return (
@@ -281,8 +300,8 @@ const Profile = () => {
                         <TableRow>
                           <TableHead className="w-[180px]">Date</TableHead>
                           <TableHead>Subject</TableHead>
-                          <TableHead className="hidden md:table-cell">Company</TableHead>
-                          <TableHead className="hidden md:table-cell">Status</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Scheduled Follow-up</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -295,13 +314,20 @@ const Profile = () => {
                               {consultation.message.substring(0, 50)}
                               {consultation.message.length > 50 ? "..." : ""}
                             </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              {consultation.company || "N/A"}
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                Submitted
+                            <TableCell>
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeColor(consultation.status)}`}>
+                                {consultation.status?.replace('_', ' ') || 'pending'}
                               </span>
+                            </TableCell>
+                            <TableCell>
+                              {consultation.scheduled_at ? (
+                                <div className="flex items-center text-blue-600">
+                                  <Calendar className="h-4 w-4 mr-1" />
+                                  <span>{formatDate(consultation.scheduled_at)}</span>
+                                </div>
+                              ) : (
+                                <span className="text-gray-500">Not scheduled yet</span>
+                              )}
                             </TableCell>
                           </TableRow>
                         ))}
