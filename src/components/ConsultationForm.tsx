@@ -16,7 +16,7 @@ interface ConsultationFormData {
   company?: string;
   message: string;
   status: string;
-  scheduled_at?: Date | null;
+  scheduled_at?: string | null;
 }
 
 export default function ConsultationForm() {

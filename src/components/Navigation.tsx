@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Menu, X, User } from "lucide-react";
+import { Menu, X, User, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
@@ -17,6 +17,7 @@ import {
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -27,8 +28,30 @@ const Navigation = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
+    
+    // Check if user is admin
+    if (user) {
+      checkAdminRole();
+    }
+    
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [user]);
+
+  const checkAdminRole = async () => {
+    if (!user) return;
+    
+    const { data: roles, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id);
+      
+    if (error) {
+      console.error("Error checking admin role:", error);
+      return;
+    }
+    
+    setIsAdmin(roles?.some((roleObj: any) => roleObj.role === 'admin') || false);
+  };
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
@@ -63,6 +86,12 @@ const Navigation = () => {
               <NavLink to="/services">Services</NavLink>
               <NavLink to="/portfolio">Portfolio</NavLink>
               <NavLink to="/about">About</NavLink>
+              {isAdmin && (
+                <NavLink to="/admin" className="flex items-center text-blue-600 font-medium">
+                  <ShieldCheck className="h-4 w-4 mr-1" />
+                  Admin
+                </NavLink>
+              )}
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -78,6 +107,12 @@ const Navigation = () => {
                     <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
                       View Profile
                     </DropdownMenuItem>
+                    {isAdmin && (
+                      <DropdownMenuItem onClick={() => navigate("/admin")} className="cursor-pointer text-blue-600">
+                        <ShieldCheck className="h-4 w-4 mr-2" />
+                        Admin Dashboard
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600">
                       Sign Out
                     </DropdownMenuItem>
@@ -120,6 +155,14 @@ const Navigation = () => {
               <MobileNavLink to="/about" onClick={() => setIsOpen(false)}>
                 About
               </MobileNavLink>
+              {isAdmin && (
+                <MobileNavLink to="/admin" onClick={() => setIsOpen(false)}>
+                  <div className="flex items-center text-blue-600">
+                    <ShieldCheck className="h-4 w-4 mr-1" />
+                    Admin Dashboard
+                  </div>
+                </MobileNavLink>
+              )}
               {user ? (
                 <>
                   <div className="px-3 py-2">

@@ -42,24 +42,40 @@ export default function AdminDashboard() {
   const [selectedConsultation, setSelectedConsultation] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     checkAdminAccess();
-    fetchConsultations();
   }, []);
 
   const checkAdminAccess = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      navigate('/');
+      navigate('/auth');
+      toast({
+        title: "Access Denied",
+        description: "Please sign in to access this page.",
+        variant: "destructive",
+      });
       return;
     }
 
-    const { data: roles } = await supabase
+    const { data: roles, error: rolesError } = await supabase
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id);
+
+    if (rolesError) {
+      console.error("Error fetching user roles:", rolesError);
+      navigate('/');
+      toast({
+        title: "Error",
+        description: "Failed to verify access permissions.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     if (!roles?.some((roleObj: any) => roleObj.role === 'admin')) {
       navigate('/');
@@ -68,7 +84,11 @@ export default function AdminDashboard() {
         description: "You don't have permission to access this page.",
         variant: "destructive",
       });
+      return;
     }
+
+    setIsAdmin(true);
+    fetchConsultations();
   };
 
   const fetchConsultations = async () => {
@@ -117,10 +137,13 @@ export default function AdminDashboard() {
 
   const scheduleFollowUp = async (id: string, scheduled_at: Date) => {
     setIsUpdateLoading(true);
+    // Convert Date to ISO string for Supabase
+    const scheduledAtString = scheduled_at.toISOString();
+    
     const { error } = await supabase
       .from('consultations')
       .update({ 
-        scheduled_at,
+        scheduled_at: scheduledAtString,
         status: 'in_progress'
       })
       .eq('id', id);
