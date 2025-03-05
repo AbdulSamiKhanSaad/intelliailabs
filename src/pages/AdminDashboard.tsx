@@ -50,6 +50,7 @@ export default function AdminDashboard() {
 
   const checkAdminAccess = async () => {
     try {
+      // First check if user is authenticated
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -62,13 +63,14 @@ export default function AdminDashboard() {
         return;
       }
 
-      const { data: roles, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id);
+      // Check if user has admin role using the RPC function
+      const { data: hasAdminRole, error: roleError } = await supabase.rpc('has_role', {
+        user_id: user.id,
+        role: 'admin'
+      });
 
-      if (rolesError) {
-        console.error("Error fetching user roles:", rolesError);
+      if (roleError) {
+        console.error("Error checking admin role:", roleError);
         navigate('/');
         toast({
           title: "Error",
@@ -78,7 +80,7 @@ export default function AdminDashboard() {
         return;
       }
 
-      if (!roles || !roles.some((roleObj: any) => roleObj.role === 'admin')) {
+      if (!hasAdminRole) {
         navigate('/');
         toast({
           title: "Access Denied",
