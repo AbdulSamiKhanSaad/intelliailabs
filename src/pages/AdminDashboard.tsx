@@ -26,7 +26,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
@@ -49,122 +48,159 @@ export default function AdminDashboard() {
   }, []);
 
   const checkAdminAccess = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      navigate('/auth');
-      toast({
-        title: "Access Denied",
-        description: "Please sign in to access this page.",
-        variant: "destructive",
-      });
-      return;
-    }
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        navigate('/auth');
+        toast({
+          title: "Access Denied",
+          description: "Please sign in to access this page.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-    const { data: roles, error: rolesError } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id);
+      const { data: roles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id);
 
-    if (rolesError) {
-      console.error("Error fetching user roles:", rolesError);
+      if (rolesError) {
+        console.error("Error fetching user roles:", rolesError);
+        navigate('/');
+        toast({
+          title: "Error",
+          description: "Failed to verify access permissions.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!roles || !roles.some((roleObj: any) => roleObj.role === 'admin')) {
+        navigate('/');
+        toast({
+          title: "Access Denied",
+          description: "You don't have permission to access this page.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setIsAdmin(true);
+      fetchConsultations();
+    } catch (error) {
+      console.error("Error checking admin access:", error);
       navigate('/');
       toast({
         title: "Error",
-        description: "Failed to verify access permissions.",
+        description: "An unexpected error occurred. Please try again later.",
         variant: "destructive",
       });
-      return;
     }
-
-    if (!roles?.some((roleObj: any) => roleObj.role === 'admin')) {
-      navigate('/');
-      toast({
-        title: "Access Denied",
-        description: "You don't have permission to access this page.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsAdmin(true);
-    fetchConsultations();
   };
 
   const fetchConsultations = async () => {
     setIsLoading(true);
-    const { data, error } = await supabase
-      .from('consultations')
-      .select('*, profiles(first_name, last_name, avatar_url)')
-      .order('created_at', { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from('consultations')
+        .select('*, profiles(first_name, last_name, avatar_url)')
+        .order('created_at', { ascending: false });
 
-    if (error) {
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch consultations: " + error.message,
+          variant: "destructive",
+        });
+        console.error("Error fetching consultations:", error);
+      } else {
+        setConsultations(data || []);
+      }
+    } catch (error: any) {
       toast({
         title: "Error",
         description: "Failed to fetch consultations: " + error.message,
         variant: "destructive",
       });
-      console.error("Error fetching consultations:", error);
-    } else {
-      setConsultations(data || []);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const updateConsultationStatus = async (id: string, status: string) => {
     setIsUpdateLoading(true);
-    const { error } = await supabase
-      .from('consultations')
-      .update({ status })
-      .eq('id', id);
+    try {
+      const { error } = await supabase
+        .from('consultations')
+        .update({ status })
+        .eq('id', id);
 
-    if (error) {
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to update status: " + error.message,
+          variant: "destructive",
+        });
+        console.error("Error updating status:", error);
+      } else {
+        fetchConsultations();
+        toast({
+          title: "Success",
+          description: "Status updated successfully.",
+        });
+      }
+    } catch (error: any) {
       toast({
         title: "Error",
         description: "Failed to update status: " + error.message,
         variant: "destructive",
       });
-      console.error("Error updating status:", error);
-    } else {
-      fetchConsultations();
-      toast({
-        title: "Success",
-        description: "Status updated successfully.",
-      });
+    } finally {
+      setIsUpdateLoading(false);
     }
-    setIsUpdateLoading(false);
   };
 
   const scheduleFollowUp = async (id: string, scheduled_at: Date) => {
     setIsUpdateLoading(true);
-    // Convert Date to ISO string for Supabase
-    const scheduledAtString = scheduled_at.toISOString();
-    
-    const { error } = await supabase
-      .from('consultations')
-      .update({ 
-        scheduled_at: scheduledAtString,
-        status: 'in_progress'
-      })
-      .eq('id', id);
+    try {
+      // Convert Date to ISO string for Supabase
+      const scheduledAtString = scheduled_at.toISOString();
+      
+      const { error } = await supabase
+        .from('consultations')
+        .update({ 
+          scheduled_at: scheduledAtString,
+          status: 'in_progress'
+        })
+        .eq('id', id);
 
-    if (error) {
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to schedule follow-up: " + error.message,
+          variant: "destructive",
+        });
+        console.error("Error scheduling follow-up:", error);
+      } else {
+        setSelectedConsultation(null);
+        setIsDialogOpen(false);
+        fetchConsultations();
+        toast({
+          title: "Success",
+          description: "Follow-up scheduled successfully.",
+        });
+      }
+    } catch (error: any) {
       toast({
         title: "Error",
         description: "Failed to schedule follow-up: " + error.message,
         variant: "destructive",
       });
-      console.error("Error scheduling follow-up:", error);
-    } else {
-      setSelectedConsultation(null);
-      setIsDialogOpen(false);
-      fetchConsultations();
-      toast({
-        title: "Success",
-        description: "Follow-up scheduled successfully.",
-      });
+    } finally {
+      setIsUpdateLoading(false);
     }
-    setIsUpdateLoading(false);
   };
 
   const getStatusBadgeColor = (status: string) => {

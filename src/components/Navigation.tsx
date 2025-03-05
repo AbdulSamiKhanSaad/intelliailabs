@@ -87,9 +87,11 @@ const Navigation = () => {
               <NavLink to="/portfolio">Portfolio</NavLink>
               <NavLink to="/about">About</NavLink>
               {isAdmin && (
-                <NavLink to="/admin" className="flex items-center text-blue-600 font-medium">
-                  <ShieldCheck className="h-4 w-4 mr-1" />
-                  Admin
+                <NavLink to="/admin">
+                  <div className="flex items-center text-blue-600 font-medium">
+                    <ShieldCheck className="h-4 w-4 mr-1" />
+                    Admin
+                  </div>
                 </NavLink>
               )}
               {user ? (
@@ -205,24 +207,32 @@ const Navigation = () => {
   );
 };
 
-const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => (
+interface NavLinkProps {
+  to: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
+const NavLink = ({ to, children, className = "" }: NavLinkProps) => (
   <Link
     to={to}
-    className="text-gray-700 hover:text-blue-600 transition-colors duration-300 font-medium"
+    className={`text-gray-700 hover:text-blue-600 transition-colors duration-300 font-medium ${className}`}
   >
     {children}
   </Link>
 );
 
+interface MobileNavLinkProps {
+  to: string;
+  onClick: () => void;
+  children: React.ReactNode;
+}
+
 const MobileNavLink = ({
   to,
   onClick,
   children,
-}: {
-  to: string;
-  onClick: () => void;
-  children: React.ReactNode;
-}) => (
+}: MobileNavLinkProps) => (
   <Link
     to={to}
     onClick={onClick}

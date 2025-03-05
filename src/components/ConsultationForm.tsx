@@ -31,7 +31,8 @@ export default function ConsultationForm() {
     company: '',
     message: '',
     user_id: user?.id,
-    status: 'pending'
+    status: 'pending',
+    scheduled_at: null
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,7 +70,8 @@ export default function ConsultationForm() {
         company: '',
         message: '',
         user_id: user?.id,
-        status: 'pending'
+        status: 'pending',
+        scheduled_at: null
       });
     } catch (error: any) {
       toast({
