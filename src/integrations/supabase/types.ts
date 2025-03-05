@@ -18,6 +18,8 @@ export type Database = {
           message: string
           name: string
           phone: string | null
+          scheduled_at: string | null
+          status: string | null
           updated_at: string | null
           user_id: string | null
         }
@@ -29,6 +31,8 @@ export type Database = {
           message: string
           name: string
           phone?: string | null
+          scheduled_at?: string | null
+          status?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
@@ -40,6 +44,8 @@ export type Database = {
           message?: string
           name?: string
           phone?: string | null
+          scheduled_at?: string | null
+          status?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
@@ -69,6 +75,27 @@ export type Database = {
           id?: string
           last_name?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
         }
         Relationships: []
       }
