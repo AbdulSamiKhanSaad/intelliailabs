@@ -32,6 +32,8 @@ const Navigation = () => {
     // Check if user is admin
     if (user) {
       checkAdminRole();
+    } else {
+      setIsAdmin(false);
     }
     
     return () => window.removeEventListener("scroll", handleScroll);
@@ -40,17 +42,22 @@ const Navigation = () => {
   const checkAdminRole = async () => {
     if (!user) return;
     
-    const { data: roles, error } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id);
+    try {
+      const { data, error } = await supabase.rpc('has_role', { 
+        user_id: user.id, 
+        role: 'admin' 
+      });
       
-    if (error) {
-      console.error("Error checking admin role:", error);
-      return;
+      if (error) {
+        console.error("Error checking admin role:", error);
+        return;
+      }
+      
+      setIsAdmin(data || false);
+      console.log("Is admin:", data);
+    } catch (err) {
+      console.error("Error in admin role check:", err);
     }
-    
-    setIsAdmin(roles?.some((roleObj: any) => roleObj.role === 'admin') || false);
   };
 
   const handleSignOut = async () => {
