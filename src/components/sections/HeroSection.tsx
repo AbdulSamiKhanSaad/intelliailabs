@@ -16,7 +16,7 @@ const HeroSection = () => (
         </p>
         <div className="flex flex-wrap justify-center gap-4 animate-fadeIn delay-200">
           <Button className="bg-blue-600 hover:bg-blue-700">
-            <a href = "https://intelliailabs.netlify.app/auth" ></a>Get Started
+            <a href = "https://intelliailabs.netlify.app/auth" >Get Started</a>
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
           <Button variant="outline">

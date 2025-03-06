@@ -52,7 +52,7 @@ const Portfolio = () => {
       <section className="py-8 bg-white">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <Button variant="outline" className="rounded-full">All Projects</Button>
+            <Button variant="outline" className="rounded-full">< a href = "https://intelliailabs.netlify.app/portfolio">All Projects</a></Button>
             <Button variant="outline" className="rounded-full">Web Development</Button>
             <Button variant="outline" className="rounded-full">Mobile Apps</Button>
             <Button variant="outline" className="rounded-full">E-commerce</Button>
