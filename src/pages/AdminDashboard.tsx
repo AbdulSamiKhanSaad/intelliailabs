@@ -106,9 +106,10 @@ export default function AdminDashboard() {
   const fetchConsultations = async () => {
     setIsLoading(true);
     try {
+      // Modified query to not try to join with profiles table
       const { data, error } = await supabase
         .from('consultations')
-        .select('*, profiles(first_name, last_name, avatar_url)')
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {
