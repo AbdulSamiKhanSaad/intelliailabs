@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Menu, X, User, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -93,6 +92,7 @@ const Navigation = () => {
               <NavLink to="/services">Services</NavLink>
               <NavLink to="/portfolio">Portfolio</NavLink>
               <NavLink to="/about">About</NavLink>
+              <NavLink to="/careers">Careers</NavLink>
               {isAdmin && (
                 <NavLink to="/admin">
                   <div className="flex items-center text-blue-600 font-medium">
@@ -163,6 +163,9 @@ const Navigation = () => {
               </MobileNavLink>
               <MobileNavLink to="/about" onClick={() => setIsOpen(false)}>
                 About
+              </MobileNavLink>
+              <MobileNavLink to="/careers" onClick={() => setIsOpen(false)}>
+                Careers
               </MobileNavLink>
               {isAdmin && (
                 <MobileNavLink to="/admin" onClick={() => setIsOpen(false)}>
