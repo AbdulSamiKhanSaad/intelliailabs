@@ -1,7 +1,6 @@
 
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ConsultationModal } from "@/components/ConsultationModal";
 
 const HeroSection = () => (
   <section id="home" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
@@ -25,7 +24,6 @@ const HeroSection = () => (
               Learn More
             </a>
           </Button>
-          <ConsultationModal />
         </div>
       </div>
     </div>
