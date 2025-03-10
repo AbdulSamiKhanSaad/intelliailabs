@@ -1,5 +1,5 @@
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import Navigation from "@/components/Navigation";
 import FooterSection from "@/components/sections/FooterSection";
 import JobApplicationForm from "@/components/JobApplicationForm";
