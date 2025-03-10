@@ -16,16 +16,17 @@ const HeroSection = () => (
           the modern world.
         </p>
         <div className="flex flex-wrap justify-center gap-4 animate-fadeIn delay-200">
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            <a href = "https://intelliailabs.netlify.app/auth" >Get Started</a>
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
+          <ConsultationModal>
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              Get Started
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </ConsultationModal>
           <Button variant="outline">
             <a href="https://intelliailabs.blogspot.com" target="_blank" rel="noopener noreferrer">
               Learn More
             </a>
           </Button>
-          <ConsultationModal />
         </div>
       </div>
     </div>
