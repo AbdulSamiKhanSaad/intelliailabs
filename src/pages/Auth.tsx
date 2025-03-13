@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { Card } from "@/components/ui/card";
-import { Eye, EyeOff, AlertTriangle } from "lucide-react";
+import { Eye, EyeOff, AlertTriangle, Shield } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
 export default function Auth() {
@@ -36,7 +35,6 @@ export default function Auth() {
       const type = hashParams.get("type");
 
       if (type === "recovery" && access_token) {
-        // Set the session with the access token
         const { data, error } = await supabase.auth.setSession({
           access_token,
           refresh_token: hashParams.get("refresh_token") || "",
@@ -44,7 +42,6 @@ export default function Auth() {
 
         if (!error && data?.session) {
           setIsResetPassword(true);
-          // Clear the hash without triggering a reload
           window.history.replaceState(null, '', window.location.pathname);
         } else {
           toast({
@@ -59,16 +56,13 @@ export default function Auth() {
     handlePasswordReset();
   }, [location, toast]);
 
-  // Calculate password strength
   const evaluatePasswordStrength = (password: string) => {
     let score = 0;
     if (!password) return 0;
     
-    // Length check
     if (password.length >= 8) score += 1;
     if (password.length >= 12) score += 1;
     
-    // Character variety checks
     if (/[A-Z]/.test(password)) score += 1;
     if (/[a-z]/.test(password)) score += 1;
     if (/[0-9]/.test(password)) score += 1;
@@ -103,7 +97,6 @@ export default function Auth() {
 
         if (error) throw error;
 
-        // Sign out after successful password reset
         await supabase.auth.signOut();
 
         toast({
@@ -183,14 +176,21 @@ export default function Auth() {
       <Helmet>
         <title>{isResetPassword ? "Reset Password" : isForgotPassword ? "Forgot Password" : isSignUp ? "Sign Up" : "Sign In"} - Intelli AI Labs</title>
         <meta name="description" content="Secure authentication for Intelli AI Labs" />
-        <meta name="robots" content="noindex" />
+        <meta name="robots" content="noindex, nofollow" />
         <meta name="referrer" content="no-referrer" />
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://donplweigpesvzqczcvq.supabase.co https://*.supabase.co; upgrade-insecure-requests;" />
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://donplweigpesvzqczcvq.supabase.co https://*.supabase.co; script-src 'self'; object-src 'none'; form-action 'self'; upgrade-insecure-requests; block-all-mixed-content" />
+        <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+        <meta http-equiv="X-Frame-Options" content="DENY" />
+        <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+        <meta name="google" content="notranslate" />
       </Helmet>
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <Card className="max-w-md w-full space-y-8 p-8">
           <div>
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            <div className="flex justify-center mb-4">
+              <Shield className="h-12 w-12 text-blue-600" />
+            </div>
+            <h2 className="mt-2 text-center text-3xl font-extrabold text-gray-900">
               {isResetPassword
                 ? "Reset your password"
                 : isForgotPassword 
@@ -199,6 +199,9 @@ export default function Auth() {
                     ? "Create your account" 
                     : "Sign in to your account"}
             </h2>
+            <p className="mt-2 text-center text-sm text-gray-600">
+              Your information is securely encrypted and protected
+            </p>
           </div>
           <form className="mt-8 space-y-6" onSubmit={handleSubmit} autoComplete={isSignUp ? "off" : "on"}>
             <div className="space-y-4">
@@ -237,6 +240,7 @@ export default function Auth() {
                       type="button"
                       className="absolute right-3 top-8"
                       onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                     >
                       {showPassword ? (
                         <EyeOff className="h-4 w-4 text-gray-400" />
