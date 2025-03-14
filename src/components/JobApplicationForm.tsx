@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -7,16 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-
-interface JobFormData {
-  full_name: string;
-  email: string;
-  phone?: string;
-  job_title: string;
-  experience_years: number;
-  skills: string;
-  cover_letter?: string;
-}
+import type { Database } from "@/integrations/supabase/types";
 
 const JobRoles = [
   "AI/ML Engineer",
@@ -32,7 +22,7 @@ const JobRoles = [
 
 export default function JobApplicationForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState<JobFormData>({
+  const [formData, setFormData] = useState<JobApplicationInsert>({
     full_name: '',
     email: '',
     phone: '',
@@ -49,7 +39,7 @@ export default function JobApplicationForm() {
     try {
       const { error } = await supabase
         .from('job_applications')
-        .insert([formData]);
+        .insert(formData);
 
       if (error) throw error;
 

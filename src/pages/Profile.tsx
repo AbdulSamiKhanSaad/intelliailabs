@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,18 +19,9 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { Eye, EyeOff, User, KeyRound, MessageSquare, Calendar, Clock } from "lucide-react";
+import type { Database } from "@/integrations/supabase/types";
 
-interface Consultation {
-  id: string;
-  created_at: string;
-  name: string;
-  email: string;
-  phone?: string;
-  company?: string;
-  message: string;
-  status?: string;
-  scheduled_at?: string;
-}
+type Consultation = Database['public']['Tables']['consultations']['Row'];
 
 const Profile = () => {
   const { user } = useAuth();
@@ -59,8 +49,7 @@ const Profile = () => {
         const { data, error } = await supabase
           .from("consultations")
           .select("*")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false });
+          .eq("user_id", user.id);
 
         if (error) throw error;
         setConsultations(data || []);
@@ -139,7 +128,6 @@ const Profile = () => {
     }).format(date);
   };
 
-  // Helper function to get status badge color
   const getStatusBadgeColor = (status?: string) => {
     switch (status) {
       case 'pending':
