@@ -16,14 +16,7 @@ const HeroSection = () => (
           the modern world.
         </p>
         <div className="flex flex-wrap justify-center gap-4 animate-fadeIn delay-200">
-          <ConsultationModal
-            trigger={
-              <Button className="bg-blue-600 hover:bg-blue-700">
-                Get Started
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            }
-          />
+          <ConsultationModal />
           <Button variant="outline">
             <a href="https://intelliailabs.blogspot.com" target="_blank" rel="noopener noreferrer">
               Learn More
