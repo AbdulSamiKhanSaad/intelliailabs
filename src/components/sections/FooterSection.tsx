@@ -1,5 +1,6 @@
 
 import { Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const FooterSection = () => (
   <footer className="bg-gray-900 text-gray-300">
@@ -18,10 +19,12 @@ const FooterSection = () => (
         <div className="space-y-4">
           <h4 className="text-lg font-semibold text-white">Quick Links</h4>
           <ul className="space-y-2">
-            <li><a href="#home" className="hover:text-blue-400 transition-colors">Home</a></li>
-            <li><a href="#services" className="hover:text-blue-400 transition-colors">Services</a></li>
-            <li><a href="#about" className="hover:text-blue-400 transition-colors">About</a></li>
-            <li><a href="#contact" className="hover:text-blue-400 transition-colors">Contact</a></li>
+            <li><Link to="/" className="hover:text-blue-400 transition-colors">Home</Link></li>
+            <li><Link to="/services" className="hover:text-blue-400 transition-colors">Services</Link></li>
+            <li><Link to="/about" className="hover:text-blue-400 transition-colors">About</Link></li>
+            <li><Link to="/careers" className="hover:text-blue-400 transition-colors">Careers</Link></li>
+            <li><Link to="/privacy-policy" className="hover:text-blue-400 transition-colors">Privacy Policy</Link></li>
+            <li><Link to="/terms-of-service" className="hover:text-blue-400 transition-colors">Terms of Service</Link></li>
           </ul>
         </div>
         
@@ -64,6 +67,10 @@ const FooterSection = () => (
       
       <div className="border-t border-gray-800 mt-12 pt-8 text-sm text-center">
         <p>&copy; {new Date().getFullYear()} IntelliAI Labs. All rights reserved.</p>
+        <p className="mt-2">
+          <Link to="/privacy-policy" className="hover:text-blue-400 transition-colors">Privacy Policy</Link> | 
+          <Link to="/terms-of-service" className="hover:text-blue-400 transition-colors ml-2">Terms of Service</Link>
+        </p>
       </div>
     </div>
   </footer>
