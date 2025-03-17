@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useRef } from "react";
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/sections/HeroSection";
@@ -10,7 +11,6 @@ import FooterSection from "@/components/sections/FooterSection";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Star, ChevronLeft, ChevronRight } from "lucide-react";
-import SEO from "@/components/SEO";
 
 const Index = () => {
   const [animatedStats, setAnimatedStats] = useState({
@@ -26,14 +26,18 @@ const Index = () => {
   const statsAnimated = useRef(false);
   const testimonialInterval = useRef(null);
   
+  // Set up testimonials slideshow
   useEffect(() => {
+    // Initialize with first 3 testimonials or fewer if not enough
     const initialTestimonials = testimonials.slice(0, Math.min(3, testimonials.length));
     setTestimonialsToShow(initialTestimonials);
     
+    // Set up interval for testimonial rotation
     testimonialInterval.current = setInterval(() => {
       setCurrentTestimonialIndex(prevIndex => {
         const nextIndex = (prevIndex + 1) % testimonials.length;
         
+        // Update testimonials to show
         const newTestimonialsToShow = [];
         for (let i = 0; i < Math.min(3, testimonials.length); i++) {
           const index = (nextIndex + i) % testimonials.length;
@@ -43,7 +47,7 @@ const Index = () => {
         
         return nextIndex;
       });
-    }, 5000);
+    }, 5000); // Change testimonials every 5 seconds
     
     return () => {
       if (testimonialInterval.current) {
@@ -52,6 +56,7 @@ const Index = () => {
     };
   }, []);
   
+  // Handle manual testimonial navigation
   const navigateTestimonials = (direction) => {
     let nextIndex;
     
@@ -63,6 +68,7 @@ const Index = () => {
     
     setCurrentTestimonialIndex(nextIndex);
     
+    // Update testimonials to show
     const newTestimonialsToShow = [];
     for (let i = 0; i < Math.min(3, testimonials.length); i++) {
       const index = (nextIndex + i) % testimonials.length;
@@ -70,6 +76,7 @@ const Index = () => {
     }
     setTestimonialsToShow(newTestimonialsToShow);
     
+    // Reset the interval
     if (testimonialInterval.current) {
       clearInterval(testimonialInterval.current);
     }
@@ -98,11 +105,13 @@ const Index = () => {
       observer.observe(el);
     });
 
+    // For stats animation
     const statsObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting && !statsAnimated.current) {
           statsAnimated.current = true;
           
+          // Animate the stats counter
           animateCounter(100, "clients");
           animateCounter(250, "projects");
           animateCounter(10, "years");
@@ -123,7 +132,7 @@ const Index = () => {
 
   const animateCounter = (target, statKey) => {
     let startTime;
-    const duration = 2000;
+    const duration = 2000; // 2 seconds duration
     
     const step = (timestamp) => {
       if (!startTime) startTime = timestamp;
@@ -144,15 +153,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      <SEO 
-        title="Professional Technology Solutions"
-        description="IntelliAI Labs delivers innovative digital solutions, web development, mobile apps, and AI services to transform your business. Get a free consultation today."
-        keywords="web development, mobile app development, AI solutions, digital transformation, technology consulting, custom software"
-      />
       <Navigation />
       <HeroSection />
       <ServicesSection />
       
+      {/* Animated Stats Section */}
       <section ref={statsRef} className="section-padding bg-blue-600 text-white">
         <div className="container mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -176,6 +181,7 @@ const Index = () => {
         </div>
       </section>
       
+      {/* Our Proven Approach Section */}
       <section className="section-padding bg-gray-50">
         <div className="container mx-auto">
           <div className="text-center mb-12">
@@ -212,6 +218,7 @@ const Index = () => {
       <AboutSection />
       <PortfolioSection />
       
+      {/* Testimonials Section with Slideshow */}
       <section className="section-padding bg-gradient-to-br from-blue-50 to-indigo-50">
         <div className="container mx-auto">
           <div className="text-center mb-12">
@@ -249,6 +256,7 @@ const Index = () => {
               ))}
             </div>
             
+            {/* Navigation arrows */}
             <button 
               onClick={() => navigateTestimonials('prev')} 
               className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-5 md:-translate-x-10 bg-white p-2 rounded-full shadow-md z-10 hover:bg-gray-100 transition-colors focus:outline-none"
@@ -265,6 +273,7 @@ const Index = () => {
               <ChevronRight className="h-6 w-6 text-blue-600" />
             </button>
             
+            {/* Dots indicator */}
             <div className="flex justify-center mt-8">
               {testimonials.map((_, index) => (
                 <button
@@ -291,6 +300,7 @@ const Index = () => {
         </div>
       </section>
       
+      {/* FAQ Section */}
       <section className="section-padding bg-white">
         <div className="container mx-auto">
           <div className="text-center mb-12">

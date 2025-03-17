@@ -1,17 +1,16 @@
 
+import { Helmet } from "react-helmet-async";
 import Navigation from "@/components/Navigation";
 import FooterSection from "@/components/sections/FooterSection";
 import JobApplicationForm from "@/components/JobApplicationForm";
-import SEO from "@/components/SEO";
 
 const Careers = () => {
   return (
     <>
-      <SEO 
-        title="Careers" 
-        description="Join the IntelliAI Labs team and be part of innovative technology solutions. Explore career opportunities and apply today."
-        keywords="tech jobs, developer jobs, IT careers, technology careers, job application"
-      />
+      <Helmet>
+        <title>Careers - Intelli AI Labs</title>
+        <meta name="description" content="Join our team at Intelli AI Labs and be part of innovative technology solutions" />
+      </Helmet>
       <Navigation />
       <main className="pt-16">
         <section className="bg-gradient-to-br from-blue-50 to-gray-100 py-20">

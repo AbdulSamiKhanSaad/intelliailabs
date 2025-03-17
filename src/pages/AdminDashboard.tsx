@@ -32,17 +32,14 @@ import {
 import { format } from "date-fns";
 import Navigation from "@/components/Navigation";
 import { ClipboardList, Calendar as CalendarIcon, Loader2 } from "lucide-react";
-import type { Database } from "@/integrations/supabase/types";
-
-type Consultation = Database['public']['Tables']['consultations']['Row'];
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [consultations, setConsultations] = useState<Consultation[]>([]);
+  const [consultations, setConsultations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
+  const [selectedConsultation, setSelectedConsultation] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
