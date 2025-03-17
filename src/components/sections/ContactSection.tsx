@@ -11,7 +11,7 @@ const ContactSection = () => (
         <p className="text-gray-600 mb-8 animate-on-scroll opacity-0">
           Let's discuss how we can help bring your vision to life
         </p>
-        <ConsultationModal />
+        <ConsultationModal asLink={true} />
       </div>
     </div>
   </section>
