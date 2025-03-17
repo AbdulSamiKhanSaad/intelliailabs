@@ -1,6 +1,11 @@
+
 import Navigation from "@/components/Navigation";
 import FooterSection from "@/components/sections/FooterSection";
 import SEO from "@/components/SEO";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { ExternalLink } from "lucide-react";
+import { ConsultationModal } from "@/components/ConsultationModal";
 
 const Portfolio = () => {
   return (
