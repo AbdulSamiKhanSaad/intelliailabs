@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -7,24 +6,16 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/lib/auth";
+import type { Database } from "@/integrations/supabase/types";
 
-interface ConsultationFormData {
-  user_id?: string;
-  name: string;
-  email: string;
-  phone?: string;
-  company?: string;
-  message: string;
-  status: string;
-  scheduled_at?: string | null;
-}
+type ConsultationInsert = Database['public']['Tables']['consultations']['Insert'];
 
 export default function ConsultationForm() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   
-  const [formData, setFormData] = useState<ConsultationFormData>({
+  const [formData, setFormData] = useState<ConsultationInsert>({
     name: user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : '',
     email: user?.email || '',
     phone: '',
@@ -42,7 +33,7 @@ export default function ConsultationForm() {
     try {
       const { data: consultation, error: insertError } = await supabase
         .from('consultations')
-        .insert([formData])
+        .insert(formData)
         .select()
         .single();
 
