@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -27,14 +28,17 @@ const JobApplicationForm = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<JobFormData>();
 
   const onSubmit = async (data: JobFormData) => {
     setIsSubmitting(true);
     try {
+      // Upload the cover letter as a text file
+      const fileName = `${data.name.replace(/\s+/g, '_')}_${Date.now()}.txt`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('resumes')
-        .upload(`${data.name}_${Date.now()}.txt`, new Blob([data.cover_letter], { type: 'text/plain' }), {
+        .upload(fileName, new Blob([data.cover_letter], { type: 'text/plain' }), {
           cacheControl: '3600',
           upsert: false
         });
@@ -43,13 +47,28 @@ const JobApplicationForm = () => {
         throw new Error(`Error uploading file: ${uploadError.message}`);
       }
 
-      const resume_url = `${supabase.storageUrl}/object/public/${uploadData?.fullPath}`;
+      // Construct the URL properly
+      const { data: publicUrlData } = supabase.storage
+        .from('resumes')
+        .getPublicUrl(fileName);
+
+      const resume_url = publicUrlData.publicUrl;
+
+      // Map the form data to match the database schema
+      const applicationData = {
+        full_name: data.name,
+        email: data.email,
+        phone: data.phone,
+        job_title: data.position,
+        experience_years: parseInt(data.experience),
+        skills: data.skills,
+        cover_letter: data.cover_letter,
+        resume_url: resume_url,
+      };
 
       const { error } = await supabase
         .from('job_applications')
-        .insert([
-          { ...data, resume_url: resume_url },
-        ]);
+        .insert(applicationData);
 
       if (error) {
         throw new Error(error.message);
@@ -70,12 +89,16 @@ const JobApplicationForm = () => {
     }
   };
 
+  const handleSelectChange = (value: string) => {
+    setValue("position", value);
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto">
       <div className="grid gap-4">
         <div>
           <Label htmlFor="name">Full Name</Label>
-          <Input type="text" id="name"  {...register("name", { required: "Name is required" })}
+          <Input type="text" id="name" {...register("name", { required: "Name is required" })}
             className="mt-1" />
           {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
         </div>
@@ -97,9 +120,9 @@ const JobApplicationForm = () => {
         </div>
         <div>
           <Label htmlFor="position">Position Applying For</Label>
-          <Select>
+          <Select onValueChange={handleSelectChange}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select a position" {...register("position", { required: "Position is required" })} />
+              <SelectValue placeholder="Select a position" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Software Engineer">Software Engineer</SelectItem>
@@ -115,7 +138,6 @@ const JobApplicationForm = () => {
           <Label htmlFor="experience">Years of Experience</Label>
           <Input type="number" id="experience" {...register("experience", {
             required: "Experience is required",
-            valueAsNumber: true,
             min: 0
           })} className="mt-1" />
           {errors.experience && <p className="text-red-500 text-sm">{errors.experience.message}</p>}
@@ -130,10 +152,6 @@ const JobApplicationForm = () => {
           <Textarea id="cover_letter" {...register("cover_letter", { required: "Cover letter is required" })} className="mt-1" />
           {errors.cover_letter && <p className="text-red-500 text-sm">{errors.cover_letter.message}</p>}
         </div>
-        {/* <div>
-          <Label htmlFor="resume">Upload Resume (PDF)</Label>
-          <Input type="file" id="resume" accept=".pdf" className="mt-1" />
-        </div> */}
         <Button disabled={isSubmitting}>
           {isSubmitting ? "Submitting..." : "Submit Application"}
         </Button>
