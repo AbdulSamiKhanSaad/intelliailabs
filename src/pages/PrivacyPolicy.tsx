@@ -1,19 +1,20 @@
+
 import React from "react";
 import { Helmet } from "@/components/Helmet";
 import Navigation from "@/components/Navigation";
 import FooterSection from "@/components/sections/FooterSection";
-import SEO from "@/components/SEO";
 
 const PrivacyPolicy = () => {
   return (
     <>
-      <SEO 
-        title="Privacy Policy" 
-        description="IntelliAI Labs privacy policy details how we collect, use, and protect your personal information when you use our services."
-        keywords="privacy policy, data protection, personal information, GDPR compliance"
-      />
+      <Helmet>
+        <title>Privacy Policy | IntelliAI Labs</title>
+        <meta name="description" content="Privacy Policy for IntelliAI Labs." />
+      </Helmet>
+
       <Navigation />
-      <main className="pt-16">
+      
+      <main className="container mx-auto px-4 py-20 max-w-4xl">
         <h1 className="text-3xl font-bold mb-8 mt-10">Privacy Policy</h1>
         
         <div className="prose max-w-none">
@@ -87,6 +88,7 @@ const PrivacyPolicy = () => {
           </p>
         </div>
       </main>
+
       <FooterSection />
     </>
   );

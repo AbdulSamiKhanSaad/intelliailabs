@@ -1,24 +1,20 @@
+
 import React from "react";
 import { Helmet } from "@/components/Helmet";
 import Navigation from "@/components/Navigation";
 import FooterSection from "@/components/sections/FooterSection";
-import SEO from "@/components/SEO";
 
 const TermsOfService = () => {
   return (
     <>
-      <SEO 
-        title="Terms of Service" 
-        description="Read the terms and conditions that govern your use of IntelliAI Labs services and website."
-        keywords="terms of service, terms and conditions, legal agreement, service terms"
-      />
-      <Navigation />
-      <main className="pt-16">
-        <Helmet>
-          <title>Terms of Service | IntelliAI Labs</title>
-          <meta name="description" content="Terms of Service for IntelliAI Labs." />
-        </Helmet>
+      <Helmet>
+        <title>Terms of Service | IntelliAI Labs</title>
+        <meta name="description" content="Terms of Service for IntelliAI Labs." />
+      </Helmet>
 
+      <Navigation />
+      
+      <main className="container mx-auto px-4 py-20 max-w-4xl">
         <h1 className="text-3xl font-bold mb-8 mt-10">Terms of Service</h1>
         
         <div className="prose max-w-none">
