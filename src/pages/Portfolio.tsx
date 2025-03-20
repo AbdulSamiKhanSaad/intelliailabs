@@ -53,10 +53,13 @@ const Portfolio = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-4 mb-8">
             <Button variant="outline" className="rounded-full">< a href = "https://intelliailabs.netlify.app/portfolio">All Projects</a></Button>
-            <Button variant="outline" className="rounded-full">Web Development</Button>
-            <Button variant="outline" className="rounded-full">Mobile Apps</Button>
+            <Button variant="outline" className="rounded-full">Custom Web Development</Button>
+            <Button variant="outline" className="rounded-full">Custom Software</Button>
             <Button variant="outline" className="rounded-full">E-commerce</Button>
-            <Button variant="outline" className="rounded-full">Enterprise</Button>
+            <Button variant="outline" className="rounded-full">Machine Learning</Button>
+            <Button variant="outline" className="rounded-full">Natural Language Processing</Button>
+            <Button variant="outline" className="rounded-full">Computer Vision</Button>
+            <Button variant="outline" className="rounded-full">ChatGpt Integrations</Button>
           </div>
         </div>
       </section>

@@ -146,15 +146,14 @@ const services = [
   },
   {
     icon: Globe,
-    title: "Digital Marketing",
-    shortDesc: "Grow your online presence",
-    description: "Our digital marketing services help you reach your target audience, drive traffic to your website, and convert visitors into customers.",
+    title: "Machine Learning",
+    shortDesc: "Custom ML Services Tailored to Your Unique Business Needs",
+    description: "Machine learning solutions from Intelli AI Labs can be tailored to your company's specific requirements. Our machine learning as a service assists businesses in maximizing efficiency and accuracy by utilizing the strength of artificial intelligence and predictive modeling.",
     features: [
-      "Search engine optimization (SEO)",
-      "Social media marketing",
-      "Content marketing",
-      "Email marketing campaigns",
-      "Analytics and reporting"
+      "Develop and deploy custom models",
+      "Automate repetitive tasks",
+      "Uncover patterns and trends",
+      "Generating actionable insights for informed decision-making."
     ]
   },
   {

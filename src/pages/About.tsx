@@ -56,7 +56,7 @@ const About = () => {
               <div className="relative">
                 <div className="bg-gray-200 rounded-lg aspect-video"></div>
                 <div className="absolute -bottom-6 -right-6 bg-blue-600 text-white p-6 rounded-lg">
-                  <p className="text-4xl font-bold">10+</p>
+                  <p className="text-4xl font-bold">3+</p>
                   <p className="text-sm">Years Experience</p>
                 </div>
               </div>
@@ -64,7 +64,7 @@ const About = () => {
             <div className="space-y-6 animate-on-scroll opacity-0">
               <h2 className="text-3xl md:text-4xl font-display font-bold">Our Story</h2>
               <p className="text-gray-600">
-                IntelliAI Labs was founded in 2013 with a vision to bridge the gap between cutting-edge technology and practical business solutions. What started as a small team of passionate developers has grown into a comprehensive digital solutions provider trusted by businesses worldwide.
+                IntelliAI Labs is founded in 2025 with a vision to bridge the gap between cutting-edge technology and practical business solutions. What started as a small team of passionate developers has grown into a comprehensive digital solutions provider trusted by businesses worldwide.
               </p>
               <p className="text-gray-600">
                 Over the years, we've evolved and expanded our services to meet the changing needs of our clients, but our core mission remains the same: to empower businesses with innovative technology solutions that drive growth and success in the digital age.
@@ -76,7 +76,7 @@ const About = () => {
                 </div>
                 <div className="flex items-start">
                   <CheckCircle2 className="h-5 w-5 text-blue-600 mr-2 flex-shrink-0 mt-1" />
-                  <p>250+ Projects Completed</p>
+                  <p>150+ Projects Completed</p>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle2 className="h-5 w-5 text-blue-600 mr-2 flex-shrink-0 mt-1" />
@@ -84,7 +84,7 @@ const About = () => {
                 </div>
                 <div className="flex items-start">
                   <CheckCircle2 className="h-5 w-5 text-blue-600 mr-2 flex-shrink-0 mt-1" />
-                  <p>45+ Team Members</p>
+                  <p>15+ Team Members</p>
                 </div>
               </div>
             </div>
@@ -142,7 +142,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Team Section */}
+      {/* Team Section
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto mb-16">
@@ -190,7 +190,7 @@ const About = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Contact Section */}
       <section className="py-16 bg-gray-50">
@@ -234,7 +234,7 @@ const About = () => {
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold mb-1">Address</h3>
-                      <p className="text-gray-600">123 Business Street, City, State 12345</p>
+                      <p className="text-gray-600">Lahore, Punjab, PK</p>
                     </div>
                   </div>
                 </Card>
